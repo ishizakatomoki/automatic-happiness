@@ -16,25 +16,30 @@ export default function RecordScreen() {
   const { state, dispatch } = useAppContext();
   const isDarkMode = useDarkMode(); // ダークモード検出
   
-  const subject = state.subjects.find(s => s.id === subjectId);
+  const subject = state.isLoading ? null : state.subjects.find(s => s.id === subjectId);
   
-  // 初期化時に現在のルートを保存
   useEffect(() => {
-    if (subject) {
+    if (state.isLoading || !subjectId) return;
+
+    if (!subject) {
+      console.error(`Subject with id ${subjectId} not found. Navigating home.`);
+      navigate('/');
+    } else {
+      dispatch({ type: 'SET_CURRENT_SUBJECT', payload: subject });
       localStorage.setItem(CURRENT_ROUTE_KEY, `/timer/${subjectId}`);
     }
-  }, [subject, subjectId]);
+  }, [subjectId, state.subjects, state.isLoading, navigate, dispatch]);
   
-  // バックグラウンドからの復帰処理を追加
   useEffect(() => {
     const handleVisibilityChange = () => {
-      if (!document.hidden && subject) {
+      if (state.isLoading || !subject) return;
+      
+      if (!document.hidden) {
         console.log('Timer screen restored on visibility change');
-        
-        // ルートが既に正しいか確認（二重ナビゲーション防止）
-        const currentPath = window.location.pathname;
-        if (currentPath !== `/timer/${subjectId}`) {
-          // バックグラウンドからの復帰時に正しいルートに戻す
+        const currentPath = window.location.hash;
+        const expectedPath = `#/timer/${subjectId}`;
+        if (currentPath !== expectedPath) {
+          console.log(`Navigating from ${currentPath} to ${expectedPath}`);
           navigate(`/timer/${subjectId}`);
         }
       }
@@ -45,15 +50,7 @@ export default function RecordScreen() {
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
-  }, [subject, subjectId, navigate]);
-  
-  useEffect(() => {
-    if (!subject) {
-      navigate('/');
-    } else {
-      dispatch({ type: 'SET_CURRENT_SUBJECT', payload: subject });
-    }
-  }, [subject, navigate, dispatch]);
+  }, [subject, subjectId, navigate, state.isLoading]);
   
   const handleRecordTime = (duration: number) => {
     console.log("handleRecordTime called with duration:", duration);
@@ -81,15 +78,17 @@ export default function RecordScreen() {
       
       console.log("Navigating to home page...");
       
-      // Recordボタンが押されたときだけホームに戻る（完全リロードではなくReactルーターを使用）
-      // ルート情報をクリア
       localStorage.removeItem(CURRENT_ROUTE_KEY);
       navigate('/');
     }
   };
   
-  if (!subject) {
-    return <div className="app-screen flex items-center justify-center">Loading...</div>;
+  if (state.isLoading || !subject) {
+    return (
+      <div className={`app-screen flex items-center justify-center ${isDarkMode ? 'bg-gray-900 text-white' : 'bg-white text-black'}`}>
+        Loading...
+      </div>
+    );
   }
   
   // ダークモードに応じた色の設定
@@ -103,7 +102,6 @@ export default function RecordScreen() {
   
   // 戻るボタンのクリック処理
   const handleBackClick = () => {
-    // ルート情報をクリア
     localStorage.removeItem(CURRENT_ROUTE_KEY);
     navigate('/');
   };
