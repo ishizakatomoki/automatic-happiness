@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
+import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { AppProvider } from './contexts/AppContext';
 import HomeScreen from './screens/HomeScreen';
 import HistoryScreen from './screens/HistoryScreen';
@@ -59,19 +59,17 @@ function App() {
   
   return (
     <AppProvider>
-      <Router>
+      <div className="flex flex-col min-h-screen bg-white">
         <RouteManager />
-        <div className="flex flex-col min-h-screen bg-white">
-          <main className="flex-1">
-            <Routes>
-              <Route path="/" element={<HomeScreen />} />
-              <Route path="/record/:subjectId" element={<RecordScreen />} />
-              <Route path="/timer/:subjectId" element={<RecordScreen />} />
-              <Route path="/history" element={<HistoryScreen />} />
-            </Routes>
-          </main>
-        </div>
-      </Router>
+        <main className="flex-1">
+          <Routes>
+            <Route path="/" element={<HomeScreen />} />
+            <Route path="/record/:subjectId" element={<RecordScreen />} />
+            <Route path="/timer/:subjectId" element={<RecordScreen />} />
+            <Route path="/history" element={<HistoryScreen />} />
+          </Routes>
+        </main>
+      </div>
     </AppProvider>
   );
 }
