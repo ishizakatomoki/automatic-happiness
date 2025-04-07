@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="/app-icon-192.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Study Tracker" />
+    <link rel="apple-touch-icon" href="/app-icon-192.png" />
+    <link rel="manifest" href="/manifest.json" />
+    <title>Study Tracker</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+    <script>
+      // Service Workerの登録
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/service-worker.js')
+            .then(reg => console.log('Service Worker registered:', reg))
+            .catch(err => console.log('Service Worker registration failed:', err));
+        });
+      }
+
+      // ダークモード検出とステータスバー色の動的切り替え
+      const updateStatusBarColor = () => {
+        const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]')
+          .setAttribute('content', 'black-translucent');
+        
+        // PWA起動時のステータスバー背景色設定
+        if (window.navigator.standalone) {
+          document.documentElement.style.setProperty(
+            '--safe-area-inset-top-color', 
+            isDarkMode ? '#121212' : '#ffffff'
+          );
+        }
+      };
+
+      // 初期設定
+      updateStatusBarColor();
+      
+      // システムのカラースキーム変更時に再設定
+      window.matchMedia('(prefers-color-scheme: dark)')
+        .addEventListener('change', updateStatusBarColor);
+    </script>
+  </body>
+</html>

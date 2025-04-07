@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>アイコン生成</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+    canvas {
+      border: 1px solid #ccc;
+      margin: 20px 0;
+    }
+    button {
+      background: #3b82f6;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Study Trackerアイコン生成</h1>
+  <p>下記のボタンを押すとアイコンが生成されます。右クリックで保存してください。</p>
+  
+  <div>
+    <canvas id="icon192" width="192" height="192"></canvas>
+    <div>
+      <button onclick="downloadIcon(192)">app-icon-192.pngをダウンロード</button>
+    </div>
+  </div>
+  
+  <div>
+    <canvas id="icon512" width="512" height="512"></canvas>
+    <div>
+      <button onclick="downloadIcon(512)">app-icon-512.pngをダウンロード</button>
+    </div>
+  </div>
+
+  <script>
+    function drawIcon(size) {
+      const canvas = document.getElementById(`icon${size}`);
+      const ctx = canvas.getContext('2d');
+      
+      // 背景色
+      ctx.fillStyle = '#3b82f6'; // Blue
+      ctx.fillRect(0, 0, size, size);
+      
+      // テキスト
+      ctx.fillStyle = 'white';
+      ctx.font = `bold ${size / 4}px -apple-system, BlinkMacSystemFont, sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('Study', size / 2, size / 2);
+      
+      return canvas;
+    }
+    
+    function downloadIcon(size) {
+      const canvas = drawIcon(size);
+      const link = document.createElement('a');
+      link.download = `app-icon-${size}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }
+    
+    // 初期描画
+    drawIcon(192);
+    drawIcon(512);
+  </script>
+</body>
+</html> 

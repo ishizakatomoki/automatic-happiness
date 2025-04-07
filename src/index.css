@@ -1,0 +1,242 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* react-image-crop スタイルのカスタマイズ */
+.ReactCrop {
+  position: relative;
+  max-width: 100%;
+  background: #f2f2f2;
+}
+
+.ReactCrop__crop-selection {
+  border: 1px solid #fff;
+  border-radius: 4px;
+  box-shadow: 0 0 0 9999em rgba(0, 0, 0, 0.5);
+}
+
+/* ダークモード用のReactCropスタイル */
+.dark-mode-crop {
+  background: #333 !important;
+}
+
+.dark-mode-crop .ReactCrop__crop-selection {
+  border: 1px solid #1890ff;
+  box-shadow: 0 0 0 9999em rgba(0, 0, 0, 0.7);
+}
+
+.dark-mode-crop .ReactCrop__drag-handle {
+  background-color: #1890ff;
+}
+
+.dark-mode-crop .ReactCrop__drag-handle::after {
+  background-color: #1890ff;
+}
+
+.dark-mode-crop .ReactCrop__drag-handle.ord-n,
+.dark-mode-crop .ReactCrop__drag-handle.ord-s,
+.dark-mode-crop .ReactCrop__drag-handle.ord-e,
+.dark-mode-crop .ReactCrop__drag-handle.ord-w {
+  background-color: #1890ff;
+}
+
+/* ステータスバーの色 */
+:root {
+  --safe-area-inset-top-color: #ffffff;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --safe-area-inset-top-color: #121212;
+  }
+}
+
+/* ダークモード時のモーダルスタイル */
+.dark-mode-modal .ant-modal-content {
+  background-color: #1f1f1f;
+  box-shadow: 0 6px 16px -8px rgba(0, 0, 0, 0.32), 0 9px 28px 0 rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.dark-mode-modal .ant-modal-header {
+  background-color: #1f1f1f;
+  border-bottom: 1px solid #333;
+}
+
+.dark-mode-modal .ant-modal-title {
+  color: #f0f0f0;
+}
+
+.dark-mode-modal .ant-modal-close {
+  color: #999;
+}
+
+.dark-mode-modal .ant-modal-close:hover {
+  color: #f0f0f0;
+}
+
+.dark-mode-modal .ant-modal-footer {
+  border-top: 1px solid #333;
+}
+
+/* システムフォントとしてSF Proを使用する設定 */
+@layer base {
+  html {
+    font-family: "SF Pro Display", "SF Pro Text", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: #ffffff;
+    -webkit-tap-highlight-color: transparent;
+    height: 100%;
+  }
+  
+  body {
+    @apply bg-white;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow-x: hidden;
+    overscroll-behavior: none;
+    touch-action: manipulation;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  #root {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+  
+  .app-screen {
+    height: 100%;
+    width: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    position: relative;
+    flex: 1;
+    padding-bottom: 70px; /* ナビゲーションバーの高さ分の余白 */
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-bold text-text-primary;
+  }
+  
+  h1 {
+    letter-spacing: -0.02em;
+  }
+  
+  /* ダークモード対応 */
+  @media (prefers-color-scheme: dark) {
+    html {
+      background-color: #121212;
+      color-scheme: dark;
+    }
+    
+    body {
+      @apply bg-gray-900 text-gray-100;
+    }
+    
+    #root {
+      background-color: #121212;
+    }
+    
+    .app-screen {
+      background-color: #121212;
+    }
+    
+    h1, h2, h3, h4, h5, h6 {
+      @apply text-gray-100;
+    }
+  }
+}
+
+/* Safari固有のインジケーター削除 */
+.overscroll-none {
+  overscroll-behavior: none;
+  -webkit-overflow-scrolling: auto;
+}
+
+/* iOS用のSafe Area対応 */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 20px);
+}
+
+.active\:scale-98:active {
+  transform: scale(0.98);
+}
+
+/* ナビゲーションバー */
+.nav-bar {
+  @apply fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 flex items-center justify-around py-3;
+  padding-bottom: calc(0.75rem + env(safe-area-inset-bottom, 0));
+  z-index: 50;
+}
+
+/* ダークモード対応のナビゲーションバー */
+@media (prefers-color-scheme: dark) {
+  .nav-bar {
+    @apply bg-gray-900 border-gray-800;
+  }
+  
+  .nav-item {
+    @apply text-gray-400;
+  }
+  
+  .nav-item.active {
+    @apply text-gray-100;
+  }
+}
+
+.nav-item {
+  @apply flex flex-col items-center justify-center p-1 text-text-secondary;
+}
+
+.nav-item.active {
+  @apply text-text-primary;
+}
+
+/* スマホステータスバー用のパディング */
+.status-bar-padding {
+  padding-top: env(safe-area-inset-top, 20px);
+  background-color: var(--safe-area-inset-top-color);
+}
+
+/* カードのスタイル */
+@layer components {
+  .subject-card {
+    @apply rounded-card overflow-hidden bg-card-bg relative aspect-square flex flex-col;
+  }
+  
+  /* ダークモード対応のカード */
+  @media (prefers-color-scheme: dark) {
+    .subject-card {
+      @apply bg-gray-800;
+    }
+    
+    .subject-card-title {
+      @apply text-gray-100;
+    }
+    
+    .menu-button {
+      @apply bg-gray-700 bg-opacity-70;
+    }
+  }
+
+  .subject-card-image {
+    @apply w-full h-3/4 object-cover;
+  }
+
+  .subject-card-title {
+    @apply text-2xl font-bold mt-2 px-4 pb-2;
+  }
+
+  /* メニューボタン */
+  .menu-button {
+    @apply absolute top-2 right-2 p-2 rounded-full bg-white bg-opacity-70 z-10;
+  }
+}
