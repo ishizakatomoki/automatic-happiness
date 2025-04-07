@@ -62,13 +62,15 @@ function App() {
     <AppProvider>
       <ErrorBoundary>
         <div className="flex flex-col min-h-screen bg-white">
-          <RouteManager />
+          {/* RouteManagerはHashRouterの中にあるべきなので、ここに置くのは適切ではない可能性がある */}
+          {/* <RouteManager /> */}
           <main className="flex-1">
             <Routes>
-              <Route path="/" element={<HomeScreen />} />
-              <Route path="/record/:subjectId" element={<RecordScreen />} />
-              <Route path="/timer/:subjectId" element={<RecordScreen />} />
-              <Route path="/history" element={<HistoryScreen />} />
+              {/* HashRouterの場合、ルートパスはスラッシュで始めない */}
+              <Route path="" element={<HomeScreen />} /> {/* ホーム */} 
+              <Route path="record/:subjectId" element={<RecordScreen />} />
+              <Route path="timer/:subjectId" element={<RecordScreen />} />
+              <Route path="history" element={<HistoryScreen />} />
             </Routes>
           </main>
         </div>
