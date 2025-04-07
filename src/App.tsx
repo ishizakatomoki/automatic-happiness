@@ -59,8 +59,8 @@ function App() {
   }, []);
   
   return (
-    <ErrorBoundary>
-      <AppProvider>
+    <AppProvider>
+      <ErrorBoundary>
         <div className="flex flex-col min-h-screen bg-white">
           <RouteManager />
           <main className="flex-1">
@@ -72,8 +72,8 @@ function App() {
             </Routes>
           </main>
         </div>
-      </AppProvider>
-    </ErrorBoundary>
+      </ErrorBoundary>
+    </AppProvider>
   );
 }
 
