@@ -2,6 +2,9 @@ export interface Subject {
   id: string;
   name: string;
   imageUrl: string;
+  color?: string; // Optional: 科目の色
+  icon?: string; // Optional: 科目のアイコン
+  createdAt?: Date; // Optional: 作成日時
 }
 
 export interface StudyRecord {
