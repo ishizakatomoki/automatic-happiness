@@ -4,6 +4,7 @@ import { AppProvider } from './contexts/AppContext';
 import HomeScreen from './screens/HomeScreen';
 import HistoryScreen from './screens/HistoryScreen';
 import RecordScreen from './screens/RecordScreen';
+import { ErrorBoundary } from './components/ErrorBoundary';
 
 // ルート情報のローカルストレージキー
 const CURRENT_ROUTE_KEY = 'current_route';
@@ -58,19 +59,21 @@ function App() {
   }, []);
   
   return (
-    <AppProvider>
-      <div className="flex flex-col min-h-screen bg-white">
-        <RouteManager />
-        <main className="flex-1">
-          <Routes>
-            <Route path="/" element={<HomeScreen />} />
-            <Route path="/record/:subjectId" element={<RecordScreen />} />
-            <Route path="/timer/:subjectId" element={<RecordScreen />} />
-            <Route path="/history" element={<HistoryScreen />} />
-          </Routes>
-        </main>
-      </div>
-    </AppProvider>
+    <ErrorBoundary>
+      <AppProvider>
+        <div className="flex flex-col min-h-screen bg-white">
+          <RouteManager />
+          <main className="flex-1">
+            <Routes>
+              <Route path="/" element={<HomeScreen />} />
+              <Route path="/record/:subjectId" element={<RecordScreen />} />
+              <Route path="/timer/:subjectId" element={<RecordScreen />} />
+              <Route path="/history" element={<HistoryScreen />} />
+            </Routes>
+          </main>
+        </div>
+      </AppProvider>
+    </ErrorBoundary>
   );
 }
 
