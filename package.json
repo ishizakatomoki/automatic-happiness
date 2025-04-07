@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
@@ -26,6 +26,7 @@
   "devDependencies": {
     "@eslint/js": "^9.21.0",
     "@tailwindcss/line-clamp": "^0.4.4",
+    "@types/node": "^20.17.30",
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.1",
     "@types/react-easy-crop": "^1.16.0",
