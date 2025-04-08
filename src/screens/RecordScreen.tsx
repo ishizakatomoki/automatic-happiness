@@ -58,7 +58,9 @@ export default function RecordScreen() {
         const expectedPath = `#/timer/${subjectId}`;
         if (currentPath !== expectedPath) {
           console.log(`Navigating from ${currentPath} to ${expectedPath}`);
-          navigate(`timer/${subjectId}`);
+          const path = `timer/${subjectId}`;
+          console.log('[RecordScreen/Visibility] Navigating to:', path); // ログ出力追加
+          navigate(path);
         }
       }
     };
@@ -147,7 +149,9 @@ export default function RecordScreen() {
   // 戻るボタンのクリック処理
   const handleBackClick = () => {
     localStorage.removeItem(CURRENT_ROUTE_KEY);
-    navigate('/');
+    const path = '/';
+    console.log('[RecordScreen/BackClick] Navigating to:', path); // ログ出力追加
+    navigate(path);
   };
   
   return (

@@ -33,7 +33,11 @@ export function NavigationBar() {
       <div 
         className="flex-1 flex flex-col items-center justify-center cursor-pointer"
         style={getTabStyle('/')}
-        onClick={() => navigate('/')}
+        onClick={() => {
+          const path = '/';
+          console.log('[NavigationBar/Home] Navigating to:', path);
+          navigate(path);
+        }}
       >
         <HomeOutlined style={iconStyle} />
         <span className="text-xs mt-1">Home</span>
@@ -42,7 +46,11 @@ export function NavigationBar() {
       <div 
         className="flex-1 flex flex-col items-center justify-center cursor-pointer"
         style={getTabStyle('/history')}
-        onClick={() => navigate('history')}
+        onClick={() => {
+          const path = 'history';
+          console.log('[NavigationBar/History] Navigating to:', path);
+          navigate(path);
+        }}
       >
         <HistoryOutlined style={iconStyle} />
         <span className="text-xs mt-1">History</span>
