@@ -58,8 +58,8 @@ export default function RecordScreen() {
         const expectedPath = `#/timer/${subjectId}`;
         if (currentPath !== expectedPath) {
           console.log(`Navigating from ${currentPath} to ${expectedPath}`);
-          const path = `timer/${subjectId}`;
-          console.log('[RecordScreen/Visibility] Navigating to:', path); // ログ出力追加
+          const path = `timer/${subjectId}`; // Ensure relative path
+          console.log('[RecordScreen/Visibility] Navigating to:', path);
           navigate(path);
         }
       }
