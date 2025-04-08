@@ -121,13 +121,28 @@ export function WeeklyChart({ records, subjects, weekOffset: propWeekOffset = 0,
         
         // その日のこの科目の合計時間（秒）を計算
         const totalSeconds = records
-          .filter(record => 
-            record.subjectId === subject.id && 
-            isWithinInterval(parseISO(record.endTime), { 
-              start: dayStart, 
-              end: dayEnd 
-            })
-          )
+          .filter(record => {
+            // endTime が有効なISO文字列か確認し、パース
+            let endTimeDate: Date | null = null;
+            try {
+              // parseISOは不正な文字列だとInvalid Dateを返すか、例外を投げる可能性がある
+              const parsed = parseISO(record.endTime);
+              // getTime()がNaNでないことを確認
+              if (!isNaN(parsed.getTime())) {
+                endTimeDate = parsed;
+              }
+            } catch (error) {
+              console.error('Error parsing record endTime:', record.endTime, error);
+            }
+
+            // endTimeDateが有効で、かつ指定された日付範囲内にあるか
+            return record.subjectId === subject.id && 
+                   endTimeDate &&
+                   isWithinInterval(endTimeDate, { 
+                     start: dayStart, 
+                     end: dayEnd 
+                   });
+          })
           .reduce((sum, record) => sum + record.duration, 0);
         
         // 時間に変換（秒数を3600で割る）

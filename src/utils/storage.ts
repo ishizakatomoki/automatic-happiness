@@ -1,4 +1,5 @@
 import { Subject, StudyRecord } from '../types';
+import { parseISO } from 'date-fns';
 
 const SUBJECTS_KEY = 'study-tracker-subjects';
 const RECORDS_KEY = 'study-tracker-records';
@@ -160,7 +161,28 @@ export const storage = {
     try {
       const parsed = JSON.parse(records);
       console.log(`${parsed.length}個の学習記録を読み込みました`);
-      return parsed;
+
+      // 学習記録データの整合性チェック
+      const validRecords = parsed.filter((record: any, index: number) => {
+        const isValid = 
+          record &&
+          typeof record.id === 'string' && record.id &&
+          typeof record.subjectId === 'string' && record.subjectId &&
+          typeof record.startTime === 'string' && !isNaN(parseISO(record.startTime).getTime()) &&
+          typeof record.endTime === 'string' && !isNaN(parseISO(record.endTime).getTime()) &&
+          typeof record.duration === 'number' && record.duration >= 0;
+          
+        if (!isValid) {
+          console.warn(`無効な学習記録データが見つかりました (index: ${index}):`, record);
+        }
+        return isValid;
+      });
+
+      if (parsed.length !== validRecords.length) {
+          console.warn(`${parsed.length - validRecords.length}個の無効な学習記録を除外しました。`);
+      }
+
+      return validRecords;
     } catch (error) {
       console.error('学習記録の解析に失敗:', error);
       return [];

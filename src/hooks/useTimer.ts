@@ -41,21 +41,35 @@ export function useTimer() {
         
         if (savedBackgroundTimeStr) {
           const backgroundTime = new Date(savedBackgroundTimeStr);
-          const now = new Date();
-          const backgroundElapsedSeconds = Math.floor((now.getTime() - backgroundTime.getTime()) / 1000);
-          updatedTime = savedCurrentTime + backgroundElapsedSeconds;
-          console.log('初期化: バックグラウンド中の経過時間を加算', { backgroundElapsedSeconds, updatedTime });
+          // backgroundTimeが有効な日付かチェック
+          if (!isNaN(backgroundTime.getTime())) {
+            const now = new Date();
+            const backgroundElapsedSeconds = Math.floor((now.getTime() - backgroundTime.getTime()) / 1000);
+            // 経過時間は負にならないようにする
+            if (backgroundElapsedSeconds > 0) {
+              updatedTime = savedCurrentTime + backgroundElapsedSeconds;
+              console.log('初期化: バックグラウンド中の経過時間を加算', { backgroundElapsedSeconds, updatedTime });
+            }
+          } else {
+            console.warn('初期化: 無効なbackgroundTimeが保存されていました:', savedBackgroundTimeStr);
+          }
         }
         
-        // 現在の時刻からスタート時間を逆算
+        // 現在の時刻からスタート時間を逆算するのではなく、フォアグラウンド復帰時と同じロジックで再開
         const now = new Date();
-        const calculatedStartTime = new Date(now.getTime() - 1000); // 1秒前に設定
-        
+        // setStartTime(new Date(now.getTime() - 1000)); // 古いロジック
+        setStartTime(now); // 新しいロジック: 現在時刻を開始時刻とする
+        setLastTime(updatedTime); // 新しいロジック: これまでの合計時間をlastTimeとする
         setTime(updatedTime);
-        setLastTime(updatedTime);
-        setStartTime(calculatedStartTime);
         setIsRunning(true);
         
+        // ローカルストレージも更新 (特にstartTime)
+        localStorage.setItem(TIMER_START_KEY, now.toISOString());
+        localStorage.setItem(TIMER_RUNNING_KEY, 'true');
+        localStorage.setItem(TIMER_LAST_TIME_KEY, String(updatedTime));
+        localStorage.setItem(TIMER_CURRENT_KEY, String(updatedTime));
+        localStorage.removeItem(TIMER_BACKGROUND_TIME_KEY); // 復帰したので削除
+
         console.log('初期化: タイマーを再開しました', { time: updatedTime, isRunning: true });
       } else if (savedLastTime > 0) {
         console.log('初期化: 停止中のタイマー状態を復元', { lastTime: savedLastTime });
@@ -155,10 +169,18 @@ export function useTimer() {
             
             if (savedBackgroundTimeStr) {
               const backgroundTime = new Date(savedBackgroundTimeStr);
-              const now = new Date();
-              const backgroundElapsedSeconds = Math.floor((now.getTime() - backgroundTime.getTime()) / 1000);
-              updatedTime = savedCurrentTime + backgroundElapsedSeconds;
-              console.log('バックグラウンド中の経過時間を加算', { backgroundElapsedSeconds, updatedTime });
+              // backgroundTimeが有効な日付かチェック
+              if (!isNaN(backgroundTime.getTime())) {
+                const now = new Date();
+                const backgroundElapsedSeconds = Math.floor((now.getTime() - backgroundTime.getTime()) / 1000);
+                // 経過時間は負にならないようにする
+                if (backgroundElapsedSeconds > 0) {
+                    updatedTime = savedCurrentTime + backgroundElapsedSeconds;
+                    console.log('バックグラウンド中の経過時間を加算', { backgroundElapsedSeconds, updatedTime });
+                }
+              } else {
+                 console.warn('復帰時: 無効なbackgroundTimeが保存されていました:', savedBackgroundTimeStr);
+              }
             }
             
             // 新しい開始時間を設定（現在時刻からの逆算）

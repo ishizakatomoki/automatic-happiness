@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ChevronLeftIcon } from '@heroicons/react/24/solid';
 import { Timer } from '../components/record/Timer';
@@ -15,25 +15,43 @@ export default function RecordScreen() {
   const navigate = useNavigate();
   const { state, dispatch } = useAppContext();
   const isDarkMode = useDarkMode(); // ダークモード検出
+  const [error, setError] = useState<string | null>(null); // エラー状態を追加
   
-  const subject = state.isLoading ? null : state.subjects.find(s => s.id === subjectId);
+  // isLoading完了後に subject を検索
+  const subject = !state.isLoading && subjectId ? state.subjects.find(s => s.id === subjectId) : null;
   
   useEffect(() => {
-    if (state.isLoading || !subjectId) return;
-
-    if (!subject) {
-      console.error(`Subject with id ${subjectId} not found. Navigating home.`);
+    // subjectId がない場合はホームへ
+    if (!subjectId) {
+      console.error('No subjectId provided. Navigating home.');
       navigate('/');
+      return;
+    }
+    // ローディング中は待機
+    if (state.isLoading) {
+      return;
+    }
+    // subjectが見つからない場合はエラー状態にしてホームへ
+    if (!subject) {
+      console.error(`Subject with id ${subjectId} not found. Setting error and navigating home.`);
+      setError(`Subject with id ${subjectId} not found.`); // エラーメッセージを設定
+      // すぐにナビゲートせず、エラーメッセージを表示できるようにする
+      // navigate('/');
+      return; // このeffectの以降の処理をスキップ
     } else {
+      // subjectが見つかった場合、エラーをクリアし、現在のSubjectを設定、ルートを保存
+      setError(null); // エラー状態をクリア
       dispatch({ type: 'SET_CURRENT_SUBJECT', payload: subject });
       localStorage.setItem(CURRENT_ROUTE_KEY, `/timer/${subjectId}`);
     }
-  }, [subjectId, state.subjects, state.isLoading, navigate, dispatch]);
+    // subject も依存配列に追加
+  }, [subjectId, subject, state.subjects, state.isLoading, navigate, dispatch]);
   
   useEffect(() => {
     const handleVisibilityChange = () => {
+      // isLoading完了前、またはsubjectが存在しない場合は何もしない
       if (state.isLoading || !subject) return;
-      
+
       if (!document.hidden) {
         console.log('Timer screen restored on visibility change');
         const currentPath = window.location.hash;
@@ -50,6 +68,7 @@ export default function RecordScreen() {
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
+    // subject も依存配列に追加
   }, [subject, subjectId, navigate, state.isLoading]);
   
   const handleRecordTime = (duration: number) => {
@@ -83,10 +102,35 @@ export default function RecordScreen() {
     }
   };
   
-  if (state.isLoading || !subject) {
+  // ローディング中の表示
+  if (state.isLoading) {
     return (
       <div className={`app-screen flex items-center justify-center ${isDarkMode ? 'bg-gray-900 text-white' : 'bg-white text-black'}`}>
         Loading...
+      </div>
+    );
+  }
+
+  // エラー発生時の表示
+  if (error) {
+    return (
+      <div className={`app-screen flex flex-col items-center justify-center ${isDarkMode ? 'bg-gray-900 text-white' : 'bg-white text-black'}`}>
+        <p className="text-red-500 mb-4">Error: {error}</p>
+        <button
+          onClick={() => navigate('/')}
+          className={`px-4 py-2 rounded ${isDarkMode ? 'bg-blue-600 hover:bg-blue-700' : 'bg-blue-500 hover:bg-blue-600'} text-white`}
+        >
+          ホームに戻る
+        </button>
+      </div>
+    );
+  }
+
+  // subjectが見つからない場合（エラー前、またはローディング完了直後）の表示
+  if (!subject) {
+    return (
+      <div className={`app-screen flex items-center justify-center ${isDarkMode ? 'bg-gray-900 text-white' : 'bg-white text-black'}`}>
+        Subject not found. Redirecting...
       </div>
     );
   }
