@@ -49,7 +49,7 @@ const TabBar: React.FC<TabBarProps> = ({ showTabBar = true }) => {
       <div 
         className="flex-1 flex flex-col items-center justify-center h-full cursor-pointer"
         style={getTabStyle('/history')}
-        onClick={() => navigate('/history')}
+        onClick={() => navigate('history')}
       >
         <HistoryOutlined style={iconStyle} />
         <span className="text-xs mt-1">履歴</span>

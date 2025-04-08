@@ -6,11 +6,5 @@
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#ffffff",
-  "icons": [
-    {
-      "src": "/app-icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    }
-  ]
+  "icons": []
 } 
