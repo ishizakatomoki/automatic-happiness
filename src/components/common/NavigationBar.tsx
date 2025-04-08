@@ -42,7 +42,7 @@ export function NavigationBar() {
       <div 
         className="flex-1 flex flex-col items-center justify-center cursor-pointer"
         style={getTabStyle('/history')}
-        onClick={() => navigate('/history')}
+        onClick={() => navigate('history')}
       >
         <HistoryOutlined style={iconStyle} />
         <span className="text-xs mt-1">History</span>

@@ -66,7 +66,7 @@ export default function HomeScreen() {
     console.log(`タイマー開始: ${subject.name}`, subject.id);
     dispatch({ type: 'SET_CURRENT_SUBJECT', payload: subject });
     dispatch({ type: 'SET_TIMER_RUNNING', payload: true });
-    navigate(`/timer/${subject.id}`);
+    navigate(`timer/${subject.id}`);
   }, [dispatch, navigate]);
 
   // ローディング中は読み込み中表示
