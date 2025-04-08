@@ -28,12 +28,21 @@ export function useTimer() {
     try {
       console.log('初期化: タイマー状態の復元を試みます');
       const savedStartTimeStr = localStorage.getItem(TIMER_START_KEY);
-      const savedIsRunning = localStorage.getItem(TIMER_RUNNING_KEY) === 'true';
-      const savedLastTime = parseInt(localStorage.getItem(TIMER_LAST_TIME_KEY) || '0', 10);
-      const savedCurrentTime = parseInt(localStorage.getItem(TIMER_CURRENT_KEY) || '0', 10);
+      const savedIsRunningStr = localStorage.getItem(TIMER_RUNNING_KEY);
+      const savedLastTimeStr = localStorage.getItem(TIMER_LAST_TIME_KEY);
+      const savedCurrentTimeStr = localStorage.getItem(TIMER_CURRENT_KEY);
       const savedBackgroundTimeStr = localStorage.getItem(TIMER_BACKGROUND_TIME_KEY);
+
+      // 保存された値の検証を強化
+      const savedIsRunning = savedIsRunningStr === 'true';
       
-      console.log('初期化: 保存された状態', { savedIsRunning, savedLastTime, savedCurrentTime });
+      const parsedLastTime = savedLastTimeStr ? parseInt(savedLastTimeStr, 10) : NaN;
+      const savedLastTime = !isNaN(parsedLastTime) && Number.isFinite(parsedLastTime) ? parsedLastTime : 0;
+      
+      const parsedCurrentTime = savedCurrentTimeStr ? parseInt(savedCurrentTimeStr, 10) : NaN;
+      const savedCurrentTime = !isNaN(parsedCurrentTime) && Number.isFinite(parsedCurrentTime) ? parsedCurrentTime : 0;
+      
+      console.log('初期化: 検証後の保存された状態', { savedIsRunning, savedLastTime, savedCurrentTime });
       
       if (savedIsRunning) {
         // バックグラウンド中の経過時間を計算
@@ -149,12 +158,21 @@ export function useTimer() {
         
         try {
           const savedStartTimeStr = localStorage.getItem(TIMER_START_KEY);
-          const savedIsRunning = localStorage.getItem(TIMER_RUNNING_KEY) === 'true';
-          const savedLastTime = parseInt(localStorage.getItem(TIMER_LAST_TIME_KEY) || '0', 10);
-          const savedCurrentTime = parseInt(localStorage.getItem(TIMER_CURRENT_KEY) || '0', 10);
+          const savedIsRunningStr = localStorage.getItem(TIMER_RUNNING_KEY);
+          const savedLastTimeStr = localStorage.getItem(TIMER_LAST_TIME_KEY);
+          const savedCurrentTimeStr = localStorage.getItem(TIMER_CURRENT_KEY);
           const savedBackgroundTimeStr = localStorage.getItem(TIMER_BACKGROUND_TIME_KEY);
           
-          console.log('保存された状態:', { 
+          // 保存された値の検証を強化
+          const savedIsRunning = savedIsRunningStr === 'true';
+          
+          const parsedLastTime = savedLastTimeStr ? parseInt(savedLastTimeStr, 10) : NaN;
+          const savedLastTime = !isNaN(parsedLastTime) && Number.isFinite(parsedLastTime) ? parsedLastTime : 0;
+          
+          const parsedCurrentTime = savedCurrentTimeStr ? parseInt(savedCurrentTimeStr, 10) : NaN;
+          const savedCurrentTime = !isNaN(parsedCurrentTime) && Number.isFinite(parsedCurrentTime) ? parsedCurrentTime : 0;
+          
+          console.log('復帰時: 検証後の保存された状態:', { 
             savedIsRunning, 
             savedLastTime, 
             savedCurrentTime, 

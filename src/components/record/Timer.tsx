@@ -165,7 +165,34 @@ export function Timer({ onRecordTime }: TimerProps) {
   // タイマーの数字を分割して表示
   const renderDigits = () => {
     const timeStr = formatTime(time);
-    const [hours, minutes, seconds] = timeStr.split(':');
+    
+    // formatTimeの結果を検証し、不正な場合はデフォルト表示
+    if (typeof timeStr !== 'string' || !/^[0-9]{2}:[0-9]{2}:[0-9]{2}$/.test(timeStr)) {
+        console.warn('Invalid time format received:', timeStr);
+        return (
+            <div style={{ 
+              display: 'flex', 
+              justifyContent: 'center',
+              width: '280px',
+              fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", sans-serif',
+              fontWeight: 250,
+              fontSize: '70px', 
+              letterSpacing: '10px',
+              color: isDarkMode ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)'
+            }}>
+             00:00:00
+            </div>
+        );
+    }
+    
+    const parts = timeStr.split(':');
+    // split結果の検証 (通常は上記regexで保証されるが一応)
+    if (parts.length !== 3 || parts.some(part => part.length !== 2)) {
+        console.error('Unexpected split result:', parts);
+        // ここでもデフォルト表示を返す（またはエラー表示）
+        return <div>Error</div>;
+    }
+    const [hours, minutes, seconds] = parts;
     
     return (
       <div 
